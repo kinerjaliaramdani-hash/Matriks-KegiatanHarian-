@@ -34,6 +34,9 @@ select,input{font:inherit;background:var(--card);color:var(--tx);border:1px soli
 #toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#17233a;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s;z-index:9;box-shadow:0 4px 18px #0005;max-width:92vw}
 #toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}#toast button{background:#fff;color:#17233a;padding:3px 10px;margin-left:8px}
 @media print{@page{size:legal landscape;margin:12mm}body{background:#fff;color:#000;font-size:9pt}.noprint{display:none!important}.po{display:block}.tm input,.tm select,td select{display:none}table{min-width:0;font-size:9pt}th{background:#a4c2f4!important;color:#000}td.ex{background:none}td,th{border-color:#000}.card{border:0;padding:0}.tm{min-width:0}}
+td[data-c="6"]{width:190px}.bt,.fl{width:0;min-width:100%;overflow-wrap:anywhere;word-break:break-word}.bt{min-height:1.4em}.fl{margin-top:5px;display:flex;flex-direction:column;gap:3px}.fl div{display:flex;gap:4px;align-items:flex-start}.fl a{color:var(--ac);word-break:break-all}.fl .x{background:none;color:#d33;border:0;padding:0 4px;font-size:13px;line-height:1.3}.attb{margin-top:5px;padding:3px 8px;font-size:11px}.gd{margin:0 auto 10px;max-width:900px}.gd summary{cursor:pointer;font-weight:600}.gd label{display:block;margin:8px 0 2px;font-size:12px;color:var(--mut)}.gd input[type=text],.gd select{width:100%;padding:6px 8px}
+dialog{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:12px;width:min(420px,92vw);padding:16px}dialog::backdrop{background:#0007}#gdb p{margin:8px 0}
+@media print{.fl a{color:#000;text-decoration:underline}.fl .x,.attb{display:none}}
 </style></head><body><div class="w">
 <div class="noprint">
 <div class="g" id="kpi"></div><div class="card" id="jn" style="margin-top:10px"></div></div>
@@ -46,6 +49,11 @@ select,input{font:inherit;background:var(--card);color:var(--tx);border:1px soli
 <div class="noprint" style="max-width:900px;margin:0 auto 6px">
 <div class="tip" style="margin:0">Ketik bulan dan tahun (mis. <b>November 2026</b>, <b>nov 2026</b>, atau <b>11/2026</b>) lalu tekan Enter. Data tiap bulan tersimpan otomatis dan terbuka kembali saat bulan itu ditulis atau dipilih di bawah.</div>
 <div class="chips" id="chips"></div></div>
+<details class="card gd noprint" id="gd"><summary>Pengaturan Google Drive <span id="gds" class="tip" style="margin:0 0 0 8px"></span></summary>
+<label for="gcid">Google OAuth Client ID</label><input type="text" id="gcid" placeholder="123456-xxxx.apps.googleusercontent.com" autocomplete="off">
+<label for="gacc">Akses link file yang diunggah</label><select id="gacc"><option value="private">Hanya akun saya (bagikan folder ke atasan lewat Drive)</option><option value="domain">Semua orang di organisasi akun ini (Workspace)</option><option value="anyone">Siapa saja yang memiliki link</option></select>
+<div class="bar" style="margin-bottom:0"><button onclick="gConnect()">Hubungkan / masuk Google</button></div>
+<div class="tip" style="margin:6px 0 0">File masuk ke folder <b>Matriks Kegiatan Harian</b>, lalu bulan, lalu tanggal di Drive Anda. Aplikasi hanya bisa melihat file yang ia unggah sendiri.</div></details>
 <div class="bar noprint">
 <button onclick="addRow()">+ Tambah baris</button>
 <button class="s" onclick="fillWeek()">Buat baris semua hari kerja</button>
@@ -57,10 +65,11 @@ select,input{font:inherit;background:var(--card);color:var(--tx);border:1px soli
 <button class="s" onclick="backup()">Cadangkan data</button>
 <button class="s" onclick="$('rf').click()">Pulihkan data</button>
 <button class="d" onclick="delMonth()">Hapus data bulan ini</button>
+<input type="file" id="gf" multiple hidden accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar,.7z">
 <input type="file" id="rf" accept=".json,application/json" hidden></div>
 <p class="tip noprint">Kolom <b>Hari/Tanggal</b>: cukup ketik angka tanggalnya (mis. <b>2</b>), otomatis menjadi nama hari lengkap sesuai bulan yang dibuka. <b>Jam</b> dipilih dengan pemilih waktu atau menu pilihan cepat. Ketik <b>Uraian Kegiatan</b> lalu klik di luar kolom: kolom kosong terisi contoh (<span>warna kuning</span>). Gunakan <b>tombol panah</b> keyboard untuk berpindah antar sel (di kolom Jam dan Status, tahan <b>Ctrl</b> + panah). Tombol <b>Hapus</b> menghapus baris, <b>Kosongkan</b> menghapus isi baris saja; keduanya bisa diurungkan.</p>
 <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
-</div><div id="toast"></div>
+</div><dialog id="gdlg" class="noprint"><div id="gdb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('gdlg').close()">Tutup</button></div></dialog><div id="toast"></div>
 <script>
 const D={"meta": {"nama": "LIA RAMDANI, S.E.", "jabatan": "Penata Perizinan Ahli Muda", "unit": "Dinas Penanaman Modal Pelayanan Terpadu Satu Pintu", "bulan": "Nopember"}, "rows": [["1", "Senin, 2 November 2026", "08.00 - 15.30 WITA", "Memeriksa kelengkapan dan kebenaran berkas permohonan izin usaha yang masuk melalui OSS-RBA", "Verifikasi administrasi", "Permohonan izin usaha sektor perdagangan dan jasa", "10 permohonan", "10 permohonan terverifikasi (8 lengkap, 2 perlu perbaikan)", "2 pemohon belum melampirkan dokumen persetujuan lingkungan", "Menghubungi pemohon untuk melengkapi berkas paling lambat 3 hari kerja", "Checklist verifikasi berkas, tangkapan layar dashboard OSS", "Selesai"], ["2", "Selasa, 3 November 2026", "08.00 - 15.30 WITA", "Menganalisis kelayakan permohonan dan menyusun konsep draf izin berdasarkan hasil verifikasi teknis", "Analisis dan penyusunan konsep izin", "Permohonan Persetujuan Bangunan Gedung (PBG)", "5 berkas", "5 draf izin disusun dan siap diajukan ke atasan (4 selesai, 1 proses)", "Hasil verifikasi teknis dari OPD teknis belum diterima untuk 1 berkas", "Mengirim surat permintaan percepatan hasil verifikasi ke OPD teknis", "Draf izin, lembar analisis, surat permintaan", "Proses"], ["3", "Rabu, 4 November 2026", "09.00 - 11.30 WITA", "Memberikan konsultasi kepada pemohon tentang persyaratan dan alur pengurusan perizinan berusaha", "Pelayanan informasi dan konsultasi", "Pelaku usaha UMKM dan masyarakat umum", "8 orang", "8 pemohon memahami persyaratan dan alur perizinan", "Sebagian pemohon belum memiliki akun OSS", "Membantu pembuatan akun OSS dan menjadwalkan pendampingan lanjutan", "Buku tamu konsultasi, foto kegiatan", "Selesai"], ["4", "Kamis, 5 November 2026", "08.00 - 16.00 WITA", "Memproses penerbitan izin yang telah disetujui pimpinan dan merekap data izin terbit", "Penerbitan dan administrasi perizinan", "Izin usaha yang telah disetujui pimpinan", "12 izin", "12 izin terbit dan tercatat dalam rekapitulasi", "Jaringan internet tidak stabil saat proses penerbitan", "Melanjutkan penerbitan setelah jaringan pulih", "Dokumen izin terbit, rekap data izin", "Selesai"], ["5", "Jumat, 6 November 2026", "08.00 - 11.00 WITA", "Menerima dan menindaklanjuti pengaduan pemohon terkait keterlambatan proses izin", "Penanganan pengaduan", "Pengaduan pemohon izin usaha dan PBG", "3 pengaduan", "3 pengaduan ditindaklanjuti dan dijawab kepada pemohon", "Status berkas tertahan di OPD teknis", "Berkoordinasi dengan OPD teknis dan menginformasikan perkembangan kepada pemohon", "Formulir pengaduan, catatan tindak lanjut", "Selesai"], ["6", "Senin, 9 November 2026", "08.00 - 15.30 WITA", "Memeriksa kelengkapan berkas permohonan perubahan data dan perpanjangan izin", "Verifikasi administrasi", "Permohonan perubahan data dan perpanjangan izin usaha", "8 permohonan", "8 permohonan terverifikasi (7 lengkap, 1 perlu perbaikan)", "Terdapat perbedaan data pada identitas pemohon", "Meminta pemohon memperbaiki dan mengunggah ulang dokumen", "Checklist verifikasi, catatan perbaikan", "Selesai"], ["7", "Selasa, 10 November 2026", "09.00 - 12.00 WITA", "Mengikuti rapat koordinasi dengan OPD teknis terkait percepatan penyelesaian berkas perizinan", "Koordinasi lintas instansi", "Berkas perizinan yang membutuhkan rekomendasi teknis", "1 kegiatan rapat", "Kesepakatan jadwal penyelesaian rekomendasi teknis", "Jadwal peninjauan lapangan OPD teknis belum pasti", "Menyusun jadwal bersama dan memantau hasil rekomendasi", "Daftar hadir, notulen rapat, foto kegiatan", "Selesai"], ["8", "Rabu, 11 November 2026", "08.30 - 15.00 WITA", "Melakukan verifikasi faktual ke lokasi usaha pemohon untuk memastikan kesesuaian data", "Verifikasi faktual lapangan", "Permohonan izin usaha dan PBG", "4 lokasi", "4 lokasi terverifikasi dan berita acara peninjauan dibuat", "Akses menuju 1 lokasi sulit dijangkau karena hujan", "Mengatur ulang kunjungan ke lokasi tersebut pada hari berikutnya", "Berita acara peninjauan, foto lokasi", "Selesai"], ["9", "Kamis, 12 November 2026", "08.00 - 15.30 WITA", "Menganalisis hasil verifikasi dan menyusun konsep draf izin usaha", "Analisis dan penyusunan konsep izin", "Permohonan izin usaha berisiko menengah tinggi", "6 berkas", "6 draf izin selesai dan diajukan ke atasan untuk persetujuan", "Tidak ada", "-", "Draf izin, lembar analisis", "Selesai"], ["10", "Jumat, 13 November 2026", "08.00 - 12.00 WITA", "Memperbarui dan menginput data perizinan pada aplikasi SIPTSP dan OSS", "Pengelolaan data perizinan", "Data izin yang telah diproses", "25 data", "25 data izin tercatat dan diperbarui pada aplikasi", "Aplikasi sempat lambat saat jam sibuk", "Melanjutkan input pada jam yang lebih lancar", "Tangkapan layar aplikasi, rekap data", "Selesai"], ["11", "Senin, 16 November 2026", "08.00 - 15.30 WITA", "Memeriksa kelengkapan dan kebenaran berkas permohonan izin usaha yang masuk melalui OSS-RBA", "Verifikasi administrasi", "Permohonan izin usaha sektor industri kecil dan perdagangan", "12 permohonan", "12 permohonan terverifikasi (10 lengkap, 2 perlu perbaikan)", "Dokumen lokasi usaha tidak terbaca jelas pada 2 berkas", "Meminta pemohon mengunggah ulang dokumen yang lebih jelas", "Checklist verifikasi, tangkapan layar OSS", "Selesai"], ["12", "Selasa, 17 November 2026", "09.00 - 11.30 WITA", "Memberikan konsultasi dan pendampingan kepada pemohon terkait pengurusan NIB dan perizinan berusaha", "Pelayanan informasi dan konsultasi", "Pelaku usaha UMKM dan masyarakat umum", "10 orang", "10 pemohon mendapat informasi dan pendampingan", "Pemohon belum memahami klasifikasi risiko usaha", "Menjelaskan klasifikasi KBLI dan tingkat risiko usaha secara rinci", "Buku tamu konsultasi, foto kegiatan", "Selesai"], ["13", "Rabu, 18 November 2026", "08.00 - 16.00 WITA", "Memproses penerbitan izin yang telah disetujui pimpinan dan menyerahkannya kepada pemohon", "Penerbitan dan administrasi perizinan", "Izin usaha dan PBG yang telah disetujui", "10 izin", "10 izin terbit dan diserahkan kepada pemohon", "Tidak ada", "-", "Dokumen izin terbit, tanda terima izin", "Selesai"], ["14", "Kamis, 19 November 2026", "08.00 - 15.30 WITA", "Menganalisis kelayakan permohonan dan menyusun konsep draf izin berdasarkan hasil verifikasi teknis", "Analisis dan penyusunan konsep izin", "Permohonan Persetujuan Bangunan Gedung (PBG)", "4 berkas", "4 draf izin disusun dan diajukan ke atasan", "Gambar teknis pada 1 berkas perlu perbaikan", "Meminta pemohon memperbaiki gambar teknis sesuai catatan OPD teknis", "Draf izin, lembar analisis, catatan perbaikan", "Selesai"], ["15", "Jumat, 20 November 2026", "08.00 - 12.00 WITA", "Menyusun rekapitulasi permohonan dan izin terbit minggu berjalan", "Pelaporan", "Data permohonan dan izin terbit mingguan", "1 laporan", "Rekapitulasi mingguan selesai disusun dan disampaikan kepada atasan", "Tidak ada", "-", "Dokumen rekapitulasi mingguan", "Selesai"], ["16", "Senin, 23 November 2026", "08.00 - 15.30 WITA", "Memeriksa kelengkapan berkas permohonan izin usaha dan menyiapkan berkas untuk verifikasi teknis", "Verifikasi administrasi", "Permohonan izin usaha sektor perdagangan dan jasa", "9 permohonan", "9 permohonan terverifikasi dan diteruskan untuk verifikasi teknis", "1 berkas belum melampirkan bukti kepemilikan lokasi", "Menghubungi pemohon untuk melengkapi bukti kepemilikan lokasi", "Checklist verifikasi, surat pengantar", "Selesai"], ["17", "Selasa, 24 November 2026", "08.30 - 15.00 WITA", "Melakukan peninjauan lapangan bersama OPD teknis untuk memastikan kesesuaian lokasi dan kegiatan usaha", "Verifikasi faktual lapangan", "Permohonan izin usaha dan PBG", "3 lokasi", "3 lokasi terverifikasi dan berita acara peninjauan dibuat", "Jadwal tim peninjau sempat bersamaan dengan kegiatan lain", "Menyesuaikan jadwal tim dan menyelesaikan peninjauan sesuai rencana", "Berita acara, foto lokasi, daftar hadir", "Selesai"], ["18", "Rabu, 25 November 2026", "09.00 - 11.30 WITA", "Memberikan konsultasi kepada pemohon tentang persyaratan dan alur pengurusan perizinan berusaha", "Pelayanan informasi dan konsultasi", "Pelaku usaha UMKM dan masyarakat umum", "7 orang", "7 pemohon memahami persyaratan dan alur perizinan", "Tidak ada", "-", "Buku tamu konsultasi, foto kegiatan", "Selesai"], ["19", "Kamis, 26 November 2026", "08.00 - 16.00 WITA", "Memproses penerbitan izin yang telah disetujui pimpinan dan merekap data izin terbit", "Penerbitan dan administrasi perizinan", "Izin usaha yang telah disetujui pimpinan", "11 izin", "11 izin terbit dan tercatat dalam rekapitulasi", "Tanda tangan pimpinan tertunda untuk 2 dokumen", "Menyampaikan kembali berkas untuk ditandatangani keesokan hari", "Dokumen izin terbit, rekap data izin", "Proses"], ["20", "Jumat, 27 November 2026", "08.00 - 12.00 WITA", "Menindaklanjuti pengaduan pemohon dan menyampaikan perkembangan penyelesaian berkas", "Penanganan pengaduan", "Pengaduan pemohon izin usaha dan PBG", "2 pengaduan", "2 pengaduan ditindaklanjuti dan dijawab kepada pemohon", "Pemohon sulit dihubungi melalui telepon", "Menghubungi melalui pesan singkat dan surat pemberitahuan", "Catatan tindak lanjut, bukti pesan", "Selesai"], ["21", "Senin, 30 November 2026", "08.00 - 16.00 WITA", "Menyusun laporan bulanan pelaksanaan kegiatan perizinan dan menyampaikannya kepada atasan", "Pelaporan", "Data permohonan dan izin terbit bulan November", "1 laporan", "Laporan bulanan selesai disusun dan disampaikan kepada atasan", "Data dari beberapa bagian belum seragam", "Melakukan penyesuaian dan pengecekan ulang data sebelum disampaikan", "Dokumen laporan bulanan", "Selesai"]]};
 const KB=D.rows,KEY="matriks-v2",OLD="matriks-kegiatan-v1",$=i=>document.getElementById(i);
@@ -122,7 +131,7 @@ function paintSt(td,r){td.querySelector("select").value=r.st;td.querySelector(".
 function applyRow(r,tr){if(!r.f[0].trim())return;const o=suggest(r);
  const mark=k=>{if(!r.ex.includes(k))r.ex.push(k);const td=tr&&tr.querySelector(`[data-c="${k}"]`);if(td)td.classList.add("ex");return td};
  if(!r.s&&!r.e){r.s=o.j[0];r.e=o.j[1];const td=mark("j");if(td)paintTime(td,r)}
- for(let i=1;i<8;i++)if(!r.f[i].trim()){r.f[i]=o[i];const td=mark(String(i));if(td)td.textContent=o[i]}
+ for(let i=1;i<8;i++)if(!r.f[i].trim()){r.f[i]=o[i];const td=mark(String(i));if(td){const bt=td.querySelector(".bt");(bt||td).textContent=o[i]}}
  if(!r.st){r.st=o.st;const td=mark("st");if(td)paintSt(td,r)}
  save();stats()}
 /* ---------- render ---------- */
@@ -131,7 +140,7 @@ function rowHTML(r,i){const x=k=>r.ex.includes(k)?" ex":"";
  return `<tr data-r="${i}"><td class="c">${i+1}</td>
 <td class="c" data-c="d" contenteditable>${esc(fmtDate(r.d))}</td>
 <td class="c tm${x("j")}" data-c="j"><input type="time" value="${esc(r.s)}"> s/d <input type="time" value="${esc(r.e)}"><br><select class="pre"><option value="">Pilih cepat</option>${PRE.map(p=>`<option value="${p}">${p.replace(/:/g,".").replace("|"," - ")}</option>`).join("")}</select><span class="po">${esc(fmtTime(r))}</span></td>
-${T(0)}${T(1)}${T(2)}${T(3,"c")}${T(4)}${T(5)}${T(6)}${T(7)}
+${T(0)}${T(1)}${T(2)}${T(3,"c")}${T(4)}${T(5)}<td class="${x("6")}" data-c="6"><div class="bt" contenteditable>${esc(r.f[6])}</div><div class="fl">${flHTML(r)}</div><button class="s attb noprint" data-att="1">+ Lampirkan (Google Drive)</button></td>${T(7)}
 <td class="c${x("st")}" data-c="st"><select>${["","Selesai","Proses"].map(s=>`<option value="${s}"${r.st==s?" selected":""}>${s}</option>`).join("")}</select><span class="po">${esc(r.st)}</span></td>
 <td class="c noprint act"><button class="s" data-a="clr" title="Kosongkan isi baris (tanggal tetap)">Kosongkan</button><button class="d" data-a="del" title="Hapus baris">Hapus</button></td></tr>`}
 function render(){const a=rows();$("per").value=perName();$("perTxt").textContent=perName();
@@ -142,8 +151,8 @@ function render(){const a=rows();$("per").value=perName();$("perTxt").textConten
 const tb=$("tb"),rowOf=el=>{const tr=el.closest("tr[data-r]");return tr?{tr,r:rows()[+tr.dataset.r]}:{}};
 tb.addEventListener("focusin",e=>{const td=e.target;if(td.dataset&&td.dataset.c=="d"){const rg=document.createRange();rg.selectNodeContents(td);const g=getSelection();g.removeAllRanges();g.addRange(rg)}});
 tb.addEventListener("keydown",e=>{if(e.key=="Enter"&&e.target.dataset&&e.target.dataset.c=="d"){e.preventDefault();e.target.blur()}});
-tb.addEventListener("input",e=>{const td=e.target.closest("td[data-c]");if(!td||!/^\d$/.test(td.dataset.c)||td.contentEditable!="true")return;const{r}=rowOf(td);if(!r)return;
- const c=td.dataset.c;r.f[+c]=td.textContent;r.ex=r.ex.filter(x=>x!=c);td.classList.remove("ex");save();stats()});
+tb.addEventListener("input",e=>{const td=e.target.closest("td[data-c]");if(!td||!/^\d$/.test(td.dataset.c)||(td.contentEditable!="true"&&!td.querySelector(".bt")))return;const{r}=rowOf(td);if(!r)return;
+ const c=td.dataset.c;const bt=td.querySelector(".bt");r.f[+c]=(bt||td).textContent;r.ex=r.ex.filter(x=>x!=c);td.classList.remove("ex");save();stats()});
 tb.addEventListener("focusout",e=>{const td=e.target.closest&&e.target.closest("td[data-c]");if(!td)return;const{tr,r}=rowOf(td);if(!r)return;
  if(td.dataset.c=="d"){const t=td.textContent.trim(),n=(t.match(/\d+/)||[])[0],mx=dim(cy(),cm());
   if(!t)r.d=null;else if(n&&+n>=1&&+n<=mx)r.d=+n;else toast("Tanggal tidak valid. "+perName()+" hanya punya tanggal 1 sampai "+mx+".");
@@ -157,16 +166,16 @@ tb.addEventListener("change",e=>{const el=e.target,td=el.closest("td[data-c]");i
  save();stats()});
 tb.addEventListener("click",e=>{const a=e.target.dataset.a;if(!a)return;const i=+e.target.closest("tr").dataset.r;
  if(a=="del")destroy("Baris "+(i+1)+" dihapus.",()=>R().splice(i,1));
- if(a=="clr")destroy("Isi baris "+(i+1)+" dikosongkan.",()=>{const r=R()[i],b=blank("","");r.s="";r.e="";r.f=b.f;r.st="";r.ex=[]})});
+ if(a=="clr")destroy("Isi baris "+(i+1)+" dikosongkan.",()=>{const r=R()[i],b=blank("","");r.s="";r.e="";r.f=b.f;r.st="";r.ex=[];r.fl=[]})});
 /* ---------- navigasi panah ---------- */
 function focusCell(td,end){const c=td.dataset.c;
  if(c=="j"){const i=td.querySelectorAll("input");(end?i[1]:i[0]).focus()}
  else if(c=="st")td.querySelector("select").focus();
- else{td.focus();if(c!="d"){const rg=document.createRange();rg.selectNodeContents(td);rg.collapse(end);const g=getSelection();g.removeAllRanges();g.addRange(rg)}}
+ else{const el=td.querySelector(".bt")||td;el.focus();if(c!="d"){const rg=document.createRange();rg.selectNodeContents(el);rg.collapse(end);const g=getSelection();g.removeAllRanges();g.addRange(rg)}}
  td.scrollIntoView({block:"nearest",inline:"nearest"})}
 tb.addEventListener("keydown",e=>{const k=e.key;if(!/^Arrow(Up|Down|Left|Right)$/.test(k)||e.shiftKey)return;
  const el=e.target,td=el.closest&&el.closest("td[data-c]");if(!td)return;
- const ed=el===td&&td.isContentEditable,mod=e.ctrlKey||e.altKey||e.metaKey;
+ const ed=(el===td||el.classList.contains("bt"))&&el.isContentEditable,mod=e.ctrlKey||e.altKey||e.metaKey;
  if(!ed&&!mod)return;
  const L=k=="ArrowLeft",Rt=k=="ArrowRight";
  if(ed&&!mod){const s=getSelection();
@@ -194,13 +203,75 @@ function backup(){try{const a=document.createElement("a");a.href=URL.createObjec
 $("rf").onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();fr.onload=()=>{try{const j=JSON.parse(fr.result);if(!j.months)throw 0;Object.assign(DB.months,j.months);if(j.profile)DB.profile=j.profile;save();loadMeta();render();toast("Data berhasil dipulihkan.")}catch(x){toast("Berkas cadangan tidak valid.")}};fr.readAsText(f);e.target.value=""};
 function loadMeta(){for(const k of["nama","jabatan","unit"])$("m_"+k).textContent=DB.profile[k]||""}
 for(const k of["nama","jabatan","unit"]){$("m_"+k).oninput=()=>{DB.profile[k]=$("m_"+k).textContent;save()}}
+/* ---------- google drive ---------- */
+const GK="matriks-gd";let GD={cid:"",acc:"private"};try{Object.assign(GD,JSON.parse(localStorage.getItem(GK))||{})}catch(e){}
+const gsave=()=>{try{localStorage.setItem(GK,JSON.stringify(GD))}catch(e){}};
+let gTok=null,gExp=0,gFold={},gTarget=-1;
+const flHTML=r=>(r.fl||[]).map((f,j)=>`<div><a href="${esc(f.u)}" target="_blank" rel="noopener">Bukti ${j+1}: ${esc(f.n)}</a><button class="x noprint" data-rm="${j}" title="Hapus dari matriks (file di Drive tetap ada)">✕</button></div>`).join("");
+function gStatus(){$("gds").textContent=!GD.cid?"(Client ID belum diisi)":gTok&&Date.now()<gExp?"✓ terhubung: "+(GD.email||""):GD.email?"(sesi habis, akun terakhir: "+GD.email+")":"(belum masuk)"}
+function gAuth(prompt){return new Promise((ok,no)=>{
+ if(!GD.cid)return no(new Error("Isi Client ID dulu di Pengaturan Google Drive."));
+ if(!prompt&&gTok&&Date.now()<gExp)return ok(gTok);
+ const run=()=>google.accounts.oauth2.initTokenClient({client_id:GD.cid,scope:"https://www.googleapis.com/auth/drive.file",login_hint:prompt?undefined:GD.email,
+  callback:r=>{if(r.error)return no(new Error("Login Google gagal: "+r.error));gTok=r.access_token;gExp=Date.now()+(r.expires_in-60)*1000;ok(gTok)},
+  error_callback:()=>no(new Error("Jendela login Google ditutup atau diblokir. Coba klik lagi."))}).requestAccessToken(prompt?{prompt}:{});
+ if(window.google&&google.accounts&&google.accounts.oauth2)return run();
+ const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.onload=run;sc.onerror=()=>no(new Error("Gagal memuat Google. Periksa koneksi internet."));document.head.appendChild(sc)})}
+async function gApi(url,opt){opt=opt||{};const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({Authorization:"Bearer "+gTok},opt.headers)}));
+ if(!r.ok){let m="";try{m=(await r.json()).error.message}catch(x){}throw new Error(m||"HTTP "+r.status)}return r.json()}
+const JH={"Content-Type":"application/json"};
+async function gFolder(name,parent){const key=(parent||"root")+"/"+name;if(gFold[key])return gFold[key];
+ const q="name='"+name+"' and mimeType='application/vnd.google-apps.folder' and trashed=false"+(parent?" and '"+parent+"' in parents":"");
+ const l=await gApi("https://www.googleapis.com/drive/v3/files?fields=files(id)&q="+encodeURIComponent(q));let id=l.files[0]&&l.files[0].id;
+ if(!id)id=(await gApi("https://www.googleapis.com/drive/v3/files?fields=id",{method:"POST",headers:JH,body:JSON.stringify({name,mimeType:"application/vnd.google-apps.folder",parents:parent?[parent]:undefined})})).id;
+ return gFold[key]=id}
+function gPrep(f){return new Promise(ok=>{if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size<300000)return ok(f);const im=new Image(),u=URL.createObjectURL(f);
+ im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+  const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  c.toBlob(b=>{URL.revokeObjectURL(u);ok(b&&b.size<f.size?new File([b],f.name.replace(/\.\w+$/,"")+".jpg",{type:"image/jpeg"}):f)},"image/jpeg",.82)};
+ im.onerror=()=>{URL.revokeObjectURL(u);ok(f)};im.src=u})}
+async function gShare(id){let b;if(GD.acc=="anyone")b={role:"reader",type:"anyone"};
+ else if(GD.acc=="domain"){const a=await gApi("https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)"),d=a.user.emailAddress.split("@")[1];
+  if(/^(gmail|googlemail)\.com$/i.test(d))throw new Error("akun Gmail biasa tidak punya organisasi");b={role:"reader",type:"domain",domain:d}}
+ else return;
+ await gApi("https://www.googleapis.com/drive/v3/files/"+id+"/permissions",{method:"POST",headers:JH,body:JSON.stringify(b)})}
+async function gUpload(i,fs){const r=R()[i];if(!r)return;let ok=0,w="";if($("gdlg").open)$("gdlg").close();
+ try{await gAuth();const root=await gFolder("Matriks Kegiatan Harian"),mon=await gFolder(DB.cur,root),day=await gFolder(r.d?"tgl-"+p2(r.d):"tanpa-tanggal",mon);
+  for(let n=0;n<fs.length;n++){if(fs[n].size>50*1048576){toast(fs[n].name+" dilewati (maksimal 50 MB).");continue}
+   toast("Mengunggah "+(n+1)+" dari "+fs.length+": "+fs[n].name);
+   const f=await gPrep(fs[n]),fd=new FormData();fd.append("metadata",new Blob([JSON.stringify({name:f.name,parents:[day]})],{type:"application/json"}));fd.append("file",f);
+   const d=await gApi("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink",{method:"POST",body:fd});
+   try{await gShare(d.id)}catch(x){w=" Link belum dibagikan: "+x.message+"."}
+   (r.fl||(r.fl=[])).push({n:f.name,id:d.id,u:d.webViewLink});ok++;save()}
+  render();toast(ok+" file diunggah ke Google Drive."+w)}
+ catch(x){gFold={};render();toast("Gagal mengunggah: "+x.message)}}
+async function gConnect(){GD.cid=$("gcid").value.trim();GD.acc=$("gacc").value;gsave();gTok=null;gFold={};if(!GD.cid)return toast("Isi Client ID dulu.");try{await gAuth("select_account");await gWho();toast("Terhubung sebagai "+GD.email+".")}catch(x){toast(x.message)}}
+async function gWho(){const a=await gApi("https://www.googleapis.com/drive/v3/about?fields=user(emailAddress,displayName)");
+ if(GD.email&&GD.email!=a.user.emailAddress)gFold={};GD.email=a.user.emailAddress;GD.name=a.user.displayName||"";gsave();gStatus()}
+async function gSignIn(prompt){try{await gAuth(prompt);await gWho();gDlg()}catch(x){gDlg();gErr(x.message)}}
+const gErr=m=>{const e=$("gerr");if(e)e.textContent=m};
+function gDlg(){const ok=gTok&&Date.now()<gExp;let h="<b>Lampirkan bukti dukung</b>";
+ if(!GD.cid)h+='<p class="tip">Client ID belum diisi. Tutup jendela ini, lalu isi di Pengaturan Google Drive di bagian atas halaman.</p>';
+ else if(!ok)h+=`<p>${GD.email?"Sesi Google habis. Akun terakhir: <b>"+esc(GD.email)+"</b>":"Masuk dengan akun Google untuk mengunggah ke Drive."}</p><div class="bar">${GD.email?'<button data-g="again">Masuk lagi</button>':""}<button class="${GD.email?"s":""}" data-g="new">${GD.email?"Pakai akun lain":"Masuk dengan Google"}</button></div>`;
+ else h+=`<p>Akun aktif: <b>${esc(GD.name||GD.email)}</b><br><span class="tip">${esc(GD.email)}</span></p><div class="bar"><button data-g="pick">Pilih file…</button><button class="s" data-g="new">Ganti akun</button></div>`;
+ h+='<p id="gerr" class="tip" style="color:#d33"></p><hr style="border:0;border-top:1px solid var(--line)"><label class="tip" for="gln">Atau tempel link Google Drive yang sudah ada</label><div class="per"><input id="gln" placeholder="https://drive.google.com/..." style="flex:1;padding:6px 8px;min-width:0"><button class="s" data-g="link">Sematkan</button></div>';
+ $("gdb").innerHTML=h}
+function gLink(){const u=$("gln").value.trim();if(!/^https:\/\/(drive|docs)\.google\.com\//.test(u))return gErr("Link harus dari drive.google.com atau docs.google.com.");
+ const r=R()[gTarget];if(!r)return;(r.fl||(r.fl=[])).push({n:"Tautan Drive",id:"",u});save();$("gdlg").close();render();toast("Link disematkan.")}
+$("gdb").onclick=e=>{const g=e.target.dataset.g;if(g=="again")gSignIn("");else if(g=="new")gSignIn("select_account");else if(g=="pick")$("gf").click();else if(g=="link")gLink()};
+$("gcid").onchange=()=>{GD.cid=$("gcid").value.trim();gTok=null;gsave();gStatus()};$("gacc").onchange=()=>{GD.acc=$("gacc").value;gsave()};
+$("gcid").value=GD.cid;$("gacc").value=GD.acc;gStatus();if(!GD.cid)$("gd").open=true;
+$("gf").onchange=e=>{const fs=[...e.target.files];e.target.value="";if(fs.length&&gTarget>=0)gUpload(gTarget,fs)};
+tb.addEventListener("click",e=>{const b=e.target,tr=b.closest&&b.closest("tr[data-r]");if(!tr)return;
+ if(b.dataset.att){gTarget=+tr.dataset.r;gDlg();$("gdlg").showModal()}
+ else if(b.dataset.rm!==undefined){const i=+tr.dataset.r,j=+b.dataset.rm;destroy("Lampiran dihapus dari matriks (file di Drive tetap ada).",()=>R()[i].fl.splice(j,1))}});
 /* ---------- statistik & word ---------- */
 function stats(){const A=rows(),n=A.length,se=A.filter(r=>r.st=="Selesai").length,pr=A.filter(r=>r.st=="Proses").length,kd=A.filter(r=>{const k=r.f[5].trim();return k&&!/^tidak ada/i.test(k)&&k!="-"}).length;
  const kp=[[n,"Kegiatan"],[se,"Selesai"],[pr,"Proses"],[n?Math.round(se/n*100)+"%":"0%","Tingkat selesai"],[kd,"Ada kendala"]];
  $("kpi").innerHTML=kp.map(k=>`<div class="card"><div class="kv">${k[0]}</div><div class="kl">${k[1]}</div></div>`).join("");
  const c={};A.forEach(r=>{const j=r.f[1].trim();if(j)c[j]=(c[j]||0)+1});const m=Math.max(1,...Object.values(c));
  $("jn").innerHTML="<b>Kegiatan per jenis pekerjaan ("+perName()+")</b>"+Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="br"><span>${esc(k)}</span><i style="width:${v/m*100}%"></i><b>${v}</b></div>`).join("")}
-function word(){const P=DB.profile,rs=rows().map((r,i)=>`<tr><td align="center">${i+1}</td><td>${esc(fmtDate(r.d))}</td><td>${esc(fmtTime(r))}</td>${r.f.map(c=>`<td>${esc(c)}</td>`).join("")}<td>${esc(r.st)}</td></tr>`).join("");
+function word(){const P=DB.profile,rs=rows().map((r,i)=>`<tr><td align="center">${i+1}</td><td>${esc(fmtDate(r.d))}</td><td>${esc(fmtTime(r))}</td>${r.f.map((c,k)=>`<td>${esc(c)}${k==6?(r.fl||[]).map((f,j)=>`<br><a href="${esc(f.u)}">Bukti ${j+1}: ${esc(f.n)}</a>`).join(""):""}</td>`).join("")}<td>${esc(r.st)}</td></tr>`).join("");
  const h=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>@page{size:35.56cm 21.59cm;mso-page-orientation:landscape;margin:1.3cm}body{font-family:Calibri;font-size:9pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:3px;vertical-align:top}th{background:#a4c2f4}</style></head><body><h2 align="center">MATRIKS KEGIATAN HARIAN</h2><p>Nama Pegawai : ${esc(P.nama)}<br>Jabatan : ${esc(P.jabatan)}<br>Unit Kerja : ${esc(P.unit)}<br>Bulan : ${perName()}</p><table><tr>${H.map(x=>`<th>${x}</th>`).join("")}</tr><tr>${H.map((x,i)=>`<th>${i+1}</th>`).join("")}</tr>${rs}</table></body></html>`;
  try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff",h],{type:"application/msword"}));a.download="Matriks_Kegiatan_Harian_"+MN[cm()]+"_"+cy()+".doc";a.click()}catch(e){alert("Unduhan tidak tersedia di sini. Buka file ini di komputer atau GitHub Pages.")}}
 loadMeta();save();render();
