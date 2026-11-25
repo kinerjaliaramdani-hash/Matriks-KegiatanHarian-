@@ -34,7 +34,7 @@ select,input{font:inherit;background:var(--card);color:var(--tx);border:1px soli
 #toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#17233a;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s;z-index:9;box-shadow:0 4px 18px #0005;max-width:92vw}
 #toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}#toast button{background:#fff;color:#17233a;padding:3px 10px;margin-left:8px}
 @media print{@page{size:legal landscape;margin:12mm}body{background:#fff;color:#000;font-size:9pt}.noprint{display:none!important}.po{display:block}.tm input,.tm select,td select{display:none}table{min-width:0;font-size:9pt}th{background:#a4c2f4!important;color:#000}td.ex{background:none}td,th{border-color:#000}.card{border:0;padding:0}.tm{min-width:0}}
-td[data-c="6"]{width:190px}.bt,.fl{width:0;min-width:100%;overflow-wrap:anywhere;word-break:break-word}.bt{min-height:1.4em}.fl{margin-top:5px;display:flex;flex-direction:column;gap:3px}.fl div{display:flex;gap:4px;align-items:flex-start}.fl a{color:var(--ac);word-break:break-all}.fl .x{background:none;color:#d33;border:0;padding:0 4px;font-size:13px;line-height:1.3}.attb{margin-top:5px;padding:3px 8px;font-size:11px}.gd{margin:0 auto 10px;max-width:900px}.gd summary{cursor:pointer;font-weight:600}.gd label{display:block;margin:8px 0 2px;font-size:12px;color:var(--mut)}.gd input[type=text],.gd select{width:100%;padding:6px 8px}
+td[data-c="7"]{width:190px}.bt,.fl{width:0;min-width:100%;overflow-wrap:anywhere;word-break:break-word}.bt{min-height:1.4em}.fl{margin-top:5px;display:flex;flex-direction:column;gap:3px}.fl div{display:flex;gap:4px;align-items:flex-start}.fl a{color:var(--ac);word-break:break-all}.fl .x{background:none;color:#d33;border:0;padding:0 4px;font-size:13px;line-height:1.3}.attb{margin-top:5px;padding:3px 8px;font-size:11px}.gd{margin:0 auto 10px;max-width:900px}.gd summary{cursor:pointer;font-weight:600}.gd label{display:block;margin:8px 0 2px;font-size:12px;color:var(--mut)}.gd input[type=text],.gd select{width:100%;padding:6px 8px}
 dialog{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:12px;width:min(420px,92vw);padding:16px}dialog::backdrop{background:#0007}#gdb p{margin:8px 0}
 @media print{.fl a{color:#000;text-decoration:underline}.fl .x,.attb{display:none}}
 </style></head><body><div class="w">
@@ -140,7 +140,7 @@ function rowHTML(r,i){const x=k=>r.ex.includes(k)?" ex":"";
  return `<tr data-r="${i}"><td class="c">${i+1}</td>
 <td class="c" data-c="d" contenteditable>${esc(fmtDate(r.d))}</td>
 <td class="c tm${x("j")}" data-c="j"><input type="time" value="${esc(r.s)}"> s/d <input type="time" value="${esc(r.e)}"><br><select class="pre"><option value="">Pilih cepat</option>${PRE.map(p=>`<option value="${p}">${p.replace(/:/g,".").replace("|"," - ")}</option>`).join("")}</select><span class="po">${esc(fmtTime(r))}</span></td>
-${T(0)}${T(1)}${T(2)}${T(3,"c")}${T(4)}${T(5)}<td class="${x("6")}" data-c="6"><div class="bt" contenteditable>${esc(r.f[6])}</div><div class="fl">${flHTML(r)}</div><button class="s attb noprint" data-att="1">+ Lampirkan (Google Drive)</button></td>${T(7)}
+${T(0)}${T(1)}${T(2)}${T(3,"c")}${T(4)}${T(5)}${T(6)}<td class="${x("7")}" data-c="7"><div class="bt" contenteditable>${esc(r.f[6])}</div><div class="fl">${flHTML(r)}</div><button class="s attb noprint" data-att="1">+ Lampirkan (Google Drive)</button></td>
 <td class="c${x("st")}" data-c="st"><select>${["","Selesai","Proses"].map(s=>`<option value="${s}"${r.st==s?" selected":""}>${s}</option>`).join("")}</select><span class="po">${esc(r.st)}</span></td>
 <td class="c noprint act"><button class="s" data-a="clr" title="Kosongkan isi baris (tanggal tetap)">Kosongkan</button><button class="d" data-a="del" title="Hapus baris">Hapus</button></td></tr>`}
 function render(){const a=rows();$("per").value=perName();$("perTxt").textContent=perName();
@@ -171,7 +171,7 @@ tb.addEventListener("click",e=>{const a=e.target.dataset.a;if(!a)return;const i=
 function focusCell(td,end){const c=td.dataset.c;
  if(c=="j"){const i=td.querySelectorAll("input");(end?i[1]:i[0]).focus()}
  else if(c=="st")td.querySelector("select").focus();
- else{const el=td.querySelector(".bt")||td;el.focus();if(c!="d"){const rg=document.createRange();rg.selectNodeContents(el);rg.collapse(end);const g=getSelection();g.removeAllRanges();g.addRange(rg)}}
+ else{const el=td.querySelector(".bt")||td;el.focus();if(c!="d"){const rg=document.createRange();rg.selectNodeContents(el);rg.collapse(!end);const g=getSelection();g.removeAllRanges();g.addRange(rg)}}
  td.scrollIntoView({block:"nearest",inline:"nearest"})}
 tb.addEventListener("keydown",e=>{const k=e.key;if(!/^Arrow(Up|Down|Left|Right)$/.test(k)||e.shiftKey)return;
  const el=e.target,td=el.closest&&el.closest("td[data-c]");if(!td)return;
@@ -180,8 +180,8 @@ tb.addEventListener("keydown",e=>{const k=e.key;if(!/^Arrow(Up|Down|Left|Right)$
  const L=k=="ArrowLeft",Rt=k=="ArrowRight";
  if(ed&&!mod){const s=getSelection();
   if(L||Rt){if(s.rangeCount&&s.isCollapsed){const rg=s.getRangeAt(0).cloneRange();
-    if(L)rg.setStart(td,0);else rg.setEnd(td,td.childNodes.length);if(rg.toString().length)return}}
-  else if(s.rangeCount&&s.isCollapsed&&td.dataset.c!="d"){const r0=s.getRangeAt(0),rc=r0.getClientRects()[0]||r0.getBoundingClientRect(),b=td.getBoundingClientRect();
+    const hs=el.classList.contains("bt")?el:td;if(L)rg.setStart(hs,0);else rg.setEnd(hs,hs.childNodes.length);if(rg.toString().length)return}}
+  else if(s.rangeCount&&s.isCollapsed&&td.dataset.c!="d"){const r0=s.getRangeAt(0),rc=r0.getClientRects()[0]||r0.getBoundingClientRect(),b=(el.classList.contains("bt")?el:td).getBoundingClientRect();
    if(rc&&rc.height){if(k=="ArrowUp"&&rc.top-b.top>rc.height)return;if(k=="ArrowDown"&&b.bottom-rc.bottom>rc.height+8)return}}}
  e.preventDefault();
  if(td.dataset.c=="j"&&(L||Rt)){const i=[...td.querySelectorAll("input")],x=i.indexOf(el);if(L&&x==1)return i[0].focus();if(Rt&&x==0)return i[1].focus()}
@@ -271,7 +271,7 @@ function stats(){const A=rows(),n=A.length,se=A.filter(r=>r.st=="Selesai").lengt
  $("kpi").innerHTML=kp.map(k=>`<div class="card"><div class="kv">${k[0]}</div><div class="kl">${k[1]}</div></div>`).join("");
  const c={};A.forEach(r=>{const j=r.f[1].trim();if(j)c[j]=(c[j]||0)+1});const m=Math.max(1,...Object.values(c));
  $("jn").innerHTML="<b>Kegiatan per jenis pekerjaan ("+perName()+")</b>"+Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="br"><span>${esc(k)}</span><i style="width:${v/m*100}%"></i><b>${v}</b></div>`).join("")}
-function word(){const P=DB.profile,rs=rows().map((r,i)=>`<tr><td align="center">${i+1}</td><td>${esc(fmtDate(r.d))}</td><td>${esc(fmtTime(r))}</td>${r.f.map((c,k)=>`<td>${esc(c)}${k==6?(r.fl||[]).map((f,j)=>`<br><a href="${esc(f.u)}">Bukti ${j+1}: ${esc(f.n)}</a>`).join(""):""}</td>`).join("")}<td>${esc(r.st)}</td></tr>`).join("");
+function word(){const P=DB.profile,rs=rows().map((r,i)=>`<tr><td align="center">${i+1}</td><td>${esc(fmtDate(r.d))}</td><td>${esc(fmtTime(r))}</td>${r.f.map((c,k)=>`<td>${esc(c)}${k==7?(r.fl||[]).map((f,j)=>`<br><a href="${esc(f.u)}">Bukti ${j+1}: ${esc(f.n)}</a>`).join(""):""}</td>`).join("")}<td>${esc(r.st)}</td></tr>`).join("");
  const h=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>@page{size:35.56cm 21.59cm;mso-page-orientation:landscape;margin:1.3cm}body{font-family:Calibri;font-size:9pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:3px;vertical-align:top}th{background:#a4c2f4}</style></head><body><h2 align="center">MATRIKS KEGIATAN HARIAN</h2><p>Nama Pegawai : ${esc(P.nama)}<br>Jabatan : ${esc(P.jabatan)}<br>Unit Kerja : ${esc(P.unit)}<br>Bulan : ${perName()}</p><table><tr>${H.map(x=>`<th>${x}</th>`).join("")}</tr><tr>${H.map((x,i)=>`<th>${i+1}</th>`).join("")}</tr>${rs}</table></body></html>`;
  try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff",h],{type:"application/msword"}));a.download="Matriks_Kegiatan_Harian_"+MN[cm()]+"_"+cy()+".doc";a.click()}catch(e){alert("Unduhan tidak tersedia di sini. Buka file ini di komputer atau GitHub Pages.")}}
 loadMeta();save();render();
