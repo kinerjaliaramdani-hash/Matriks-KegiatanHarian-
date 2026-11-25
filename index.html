@@ -58,7 +58,7 @@ select,input{font:inherit;background:var(--card);color:var(--tx);border:1px soli
 <button class="s" onclick="$('rf').click()">Pulihkan data</button>
 <button class="d" onclick="delMonth()">Hapus data bulan ini</button>
 <input type="file" id="rf" accept=".json,application/json" hidden></div>
-<p class="tip noprint">Kolom <b>Hari/Tanggal</b>: cukup ketik angka tanggalnya (mis. <b>2</b>), otomatis menjadi nama hari lengkap sesuai bulan yang dibuka. <b>Jam</b> dipilih dengan pemilih waktu atau menu pilihan cepat. Ketik <b>Uraian Kegiatan</b> lalu klik di luar kolom: kolom kosong terisi contoh (<span>warna kuning</span>). Tombol <b>Hapus</b> menghapus baris, <b>Kosongkan</b> menghapus isi baris saja; keduanya bisa diurungkan.</p>
+<p class="tip noprint">Kolom <b>Hari/Tanggal</b>: cukup ketik angka tanggalnya (mis. <b>2</b>), otomatis menjadi nama hari lengkap sesuai bulan yang dibuka. <b>Jam</b> dipilih dengan pemilih waktu atau menu pilihan cepat. Ketik <b>Uraian Kegiatan</b> lalu klik di luar kolom: kolom kosong terisi contoh (<span>warna kuning</span>). Gunakan <b>tombol panah</b> keyboard untuk berpindah antar sel (di kolom Jam dan Status, tahan <b>Ctrl</b> + panah). Tombol <b>Hapus</b> menghapus baris, <b>Kosongkan</b> menghapus isi baris saja; keduanya bisa diurungkan.</p>
 <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
 </div><div id="toast"></div>
 <script>
@@ -158,6 +158,28 @@ tb.addEventListener("change",e=>{const el=e.target,td=el.closest("td[data-c]");i
 tb.addEventListener("click",e=>{const a=e.target.dataset.a;if(!a)return;const i=+e.target.closest("tr").dataset.r;
  if(a=="del")destroy("Baris "+(i+1)+" dihapus.",()=>R().splice(i,1));
  if(a=="clr")destroy("Isi baris "+(i+1)+" dikosongkan.",()=>{const r=R()[i],b=blank("","");r.s="";r.e="";r.f=b.f;r.st="";r.ex=[]})});
+/* ---------- navigasi panah ---------- */
+function focusCell(td,end){const c=td.dataset.c;
+ if(c=="j"){const i=td.querySelectorAll("input");(end?i[1]:i[0]).focus()}
+ else if(c=="st")td.querySelector("select").focus();
+ else{td.focus();if(c!="d"){const rg=document.createRange();rg.selectNodeContents(td);rg.collapse(end);const g=getSelection();g.removeAllRanges();g.addRange(rg)}}
+ td.scrollIntoView({block:"nearest",inline:"nearest"})}
+tb.addEventListener("keydown",e=>{const k=e.key;if(!/^Arrow(Up|Down|Left|Right)$/.test(k)||e.shiftKey)return;
+ const el=e.target,td=el.closest&&el.closest("td[data-c]");if(!td)return;
+ const ed=el===td&&td.isContentEditable,mod=e.ctrlKey||e.altKey||e.metaKey;
+ if(!ed&&!mod)return;
+ const L=k=="ArrowLeft",Rt=k=="ArrowRight";
+ if(ed&&!mod){const s=getSelection();
+  if(L||Rt){if(s.rangeCount&&s.isCollapsed){const rg=s.getRangeAt(0).cloneRange();
+    if(L)rg.setStart(td,0);else rg.setEnd(td,td.childNodes.length);if(rg.toString().length)return}}
+  else if(s.rangeCount&&s.isCollapsed&&td.dataset.c!="d"){const r0=s.getRangeAt(0),rc=r0.getClientRects()[0]||r0.getBoundingClientRect(),b=td.getBoundingClientRect();
+   if(rc&&rc.height){if(k=="ArrowUp"&&rc.top-b.top>rc.height)return;if(k=="ArrowDown"&&b.bottom-rc.bottom>rc.height+8)return}}}
+ e.preventDefault();
+ if(td.dataset.c=="j"&&(L||Rt)){const i=[...td.querySelectorAll("input")],x=i.indexOf(el);if(L&&x==1)return i[0].focus();if(Rt&&x==0)return i[1].focus()}
+ const tr=td.parentNode,cells=[...tr.querySelectorAll("td[data-c]")],ci=cells.indexOf(td);let nt=null;
+ if(L)nt=cells[ci-1];else if(Rt)nt=cells[ci+1];
+ else{const r2=k=="ArrowUp"?tr.previousElementSibling:tr.nextElementSibling;if(r2&&r2.dataset.r!==undefined)nt=r2.querySelectorAll("td[data-c]")[ci]}
+ if(nt)focusCell(nt,L)});
 /* ---------- aksi ---------- */
 function nextDay(){const a=rows(),n=dim(cy(),cm());let d=1;for(let i=a.length-1;i>=0;i--)if(a[i].d){d=a[i].d+1;break}
  while(d<=n&&[0,6].includes(new Date(cy(),cm(),d).getDay()))d++;return d>n?null:d}
