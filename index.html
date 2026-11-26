@@ -66,7 +66,7 @@ tr.nd td{border-top:2px solid var(--ac)}@media print{tr.nd td{border-top:2px sol
 <div class="tip" style="margin:6px 0 0">File masuk ke folder <b>Matriks Kegiatan Harian</b>, lalu bulan, lalu tanggal di Drive Anda. Aplikasi hanya bisa melihat file yang ia unggah sendiri.</div></details>
 <div class="bar noprint">
 <button onclick="addRow()">+ Tambah baris</button>
-<select id="pd" title="Jumlah kegiatan per hari"><option value="1">1 kegiatan/hari</option><option value="2">2 kegiatan/hari</option><option value="3">3 kegiatan/hari</option><option value="4">4 kegiatan/hari</option><option value="5">5 kegiatan/hari</option><option value="6">6 kegiatan/hari</option><option value="7">7 kegiatan/hari</option><option value="8" selected>8 kegiatan/hari</option></select>
+<select id="pd" title="Jumlah kegiatan per hari"><option value="1">1 kegiatan/hari</option><option value="2" selected>2 kegiatan/hari</option><option value="3">3 kegiatan/hari</option><option value="4">4 kegiatan/hari</option><option value="5">5 kegiatan/hari</option><option value="6">6 kegiatan/hari</option><option value="7">7 kegiatan/hari</option><option value="8">8 kegiatan/hari</option></select>
 <button id="ad" onclick="addDay()">+ Tambah hari berikutnya</button>
 <button class="s" onclick="fillWeek()">Buat baris semua hari kerja</button>
 <button class="s" onclick="sortRows()">Urutkan tanggal &amp; jam</button>
@@ -84,7 +84,7 @@ tr.nd td{border-top:2px solid var(--ac)}@media print{tr.nd td{border-top:2px sol
 <input type="file" id="rf" accept=".json,application/json" hidden></div>
 <p class="tip noprint"><b>Tambah hari:</b> pilih jumlah kegiatan per hari, lalu klik <b>+ Tambah hari berikutnya</b>. Setiap klik menambah satu hari kerja berikutnya (Sabtu dan Minggu dilewati) dengan jumlah baris sesuai pilihan; ubah pilihan kapan saja untuk hari berikutnya. <b>Hapus baris kosong:</b> menghapus baris yang semua kolom isiannya (uraian sampai bukti dukung) masih kosong, walau tanggal dan jamnya sudah terisi; bisa diurungkan. <b>Cetak PDF:</b> kertas otomatis <b>Legal lanskap</b>. Di jendela cetak pilih Tujuan <b>Simpan sebagai PDF</b>; kalau ukuran kertas masih tertulis A4, ubah manual ke <b>Legal</b> dan tata letak <b>Lanskap</b>. <b>Blok tabel:</b> seret mouse melintasi beberapa sel, atau klik nomor baris / judul kolom (tahan <b>Shift</b> untuk memperluas), lalu tekan <b>Delete</b> atau tombol <b>Hapus isi terpilih</b>. Tanggal tidak ikut terhapus; bisa diurungkan. Satu hari bisa berisi <b>sampai 8 kegiatan</b>, masing-masing punya jam sendiri: klik <b>+ Kegiatan</b> pada baris tanggal itu (jam otomatis lanjut dari kegiatan sebelumnya), atau pilih jumlah kegiatan per hari lalu klik <b>Buat baris semua hari kerja</b>. Kolom <b>Hari/Tanggal</b>: cukup ketik angka tanggalnya (mis. <b>2</b>), otomatis menjadi nama hari lengkap sesuai bulan yang dibuka. <b>Jam</b> dipilih dengan pemilih waktu atau menu pilihan cepat. Ketik <b>Uraian Kegiatan</b>, lalu klik <b>Isi contoh</b> di baris itu (atau <b>Isi contoh dari uraian</b> untuk semua baris): kolom kosong terisi contoh (<span>warna kuning</span>). Isian contoh tidak muncul sendiri. Gunakan <b>tombol panah</b> keyboard untuk berpindah antar sel (di kolom Jam dan Status, tahan <b>Ctrl</b> + panah). Tombol <b>Hapus</b> menghapus baris, <b>Kosongkan</b> menghapus isi baris saja; keduanya bisa diurungkan.</p>
 <div class="tw"><table><colgroup><col style="width:2.389%"><col style="width:6.210%"><col style="width:7.643%"><col style="width:13.376%"><col style="width:7.962%"><col style="width:9.156%"><col style="width:5.414%"><col style="width:9.554%"><col style="width:8.917%"><col style="width:7.564%"><col style="width:9.554%"><col style="width:4.936%"><col style="width:7.325%" class=noprint></colgroup><thead id="th"></thead><tbody id="tb"></tbody></table></div>
-</div><dialog id="adlg" class="noprint" style="width:min(560px,94vw)"><div id="adb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('adlg').close()">Tutup</button></div></dialog><dialog id="gdlg" class="noprint"><div id="gdb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('gdlg').close()">Tutup</button></div></dialog><div id="toast"></div>
+</div><footer class="noprint" style="margin:18px auto 8px;max-width:900px;text-align:center;font-size:12px;color:var(--mut)">Aplikasi ini dirancang oleh <b>MAKMUR NONCI, S.Pd., MM. Pd</b> (Pengawas SD)</footer><dialog id="adlg" class="noprint" style="width:min(560px,94vw)"><div id="adb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('adlg').close()">Tutup</button></div></dialog><dialog id="gdlg" class="noprint"><div id="gdb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('gdlg').close()">Tutup</button></div></dialog><div id="toast"></div>
 <script>
 /* ISI setelah setup Firebase. Kosongkan apiKey = mode lokal tanpa login. */
 const APP_CFG={firebase:{apiKey:"AIzaSyAKbwVNfmgUlW1LCqOmkUWpJ1H9oJHSeDk",authDomain:"matriks-kegiatan-de24b.firebaseapp.com",projectId:"matriks-kegiatan-de24b",appId:"1:246512533265:web:b9edbd78a2545ce04596b0"},admin:"kinerjaliaramdani@gmail.com",cid:"246512533265-setp5mu6pvm23p04c1npl7v2mgk2b1t5.apps.googleusercontent.com"};
@@ -94,13 +94,16 @@ const MN=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","Se
 const MA={jan:0,feb:1,mar:2,apr:3,mei:4,jun:5,jul:6,agu:7,agt:7,sep:8,okt:9,nov:10,nop:10,des:11};
 const HR=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const H=["NO","HARI/TANGGAL","JAM MULAI/JAM SELESAI","URAIAN KEGIATAN","JENIS/TAHAPAN PERKERJAAN","OBJEK/PERMOHONAN YANG DI TANGANI","VOLUME/TARGET","HASIL OUTPUT KEGIATAN","PERMASALAHAN/KENDALA","TINDAK LANJUT","BUKTI DUKUNG","STATUS"];
-const MAXD=8,SLOTS=["08:00|09:00","09:00|10:00","10:00|11:00","11:00|12:00","13:00|14:00","14:00|15:00","15:00|16:00","16:00|16:30"];
-const PRE=["08:00|15:30","08:00|16:00","08:00|12:00","09:00|11:30","13:00|16:00"].concat(SLOTS);
-const p2=n=>String(n).padStart(2,"0"),mk=(y,m)=>y+"-"+p2(m+1),dim=(y,m)=>new Date(y,m+1,0).getDate();
+const p2=n=>String(n).padStart(2,"0");
+const MAXD=8,SLOTS=["07:30|12:00","13:00|16:00","16:00|17:00","17:00|18:00","18:00|19:00","19:00|20:00","20:00|21:00","21:00|22:00"];
+const HRS=Array.from({length:23},(_,i)=>p2(i+1)+":00|"+p2(i+2)+":00");
+const PRE=["07:30|12:00","13:00|16:00","08:00|15:30","08:00|16:00","08:00|12:00","09:00|11:30","13:00|16:00"].concat(SLOTS,HRS.filter(h=>!SLOTS.includes(h)));
+const tv=v=>v=="24:00"?"00:00":v;
+const mk=(y,m)=>y+"-"+p2(m+1),dim=(y,m)=>new Date(y,m+1,0).getDate();
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const tm=s=>{const t=String(s||"").match(/(\d{1,2})[.:](\d{2})\s*-\s*(\d{1,2})[.:](\d{2})/);return t?[p2(t[1])+":"+t[2],p2(t[3])+":"+t[4]]:["",""]};
 const conv=r=>{const[s,e]=tm(r[2]),d=String(r[1]||"").match(/(\d+)/);return{d:d?+d[1]:null,s,e,f:r.slice(3,11).map(x=>x||""),st:r[11]||"",ex:[]}};
-const blank=(s,e)=>({d:null,s:s||"08:00",e:e||"15:30",f:Array(8).fill(""),st:"",ex:[]});
+const blank=(s,e)=>({d:null,s:s||"07:30",e:e||"12:00",f:Array(8).fill(""),st:"",ex:[]});
 /* ---------- data ---------- */
 let DB=null;try{DB=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!DB||!DB.months){
@@ -180,8 +183,8 @@ function suggest(r){
  const m=t.match(/(?:tentang|terkait|mengenai)\s+(.+?)(?:\s+(?:pada|melalui|di|kepada)\s+.*)?$/i),tp=m?m[1].trim():"";
  const w=raw.split(/\s+/)[0].toLowerCase(),O=c.ub&&UN.includes(w)?raw:null,one=c.one&&!O&&raw,u=one?"kegiatan":(O?w:c.u);
  const n=one?1:c.lo+h%(c.hi-c.lo+1),kd=!c.fb&&((h>>>3)%10)<3;
- return{j:["08:00","09:00"],st:kd?"Proses":"Selesai",1:c.j,2:O?cap(O):((c.ro||c.fb)&&raw?cap(raw):c.ob),3:n+" "+u,4:c.h(n,u,O,tp,raw),5:kd?c.k:"Tidak ada",6:kd?c.t:"-",7:c.b}}
-function paintTime(td,r){const i=td.querySelectorAll("input");i[0].value=r.s;i[1].value=r.e;td.querySelector(".po").textContent=fmtTime(r)}
+ return{j:["07:30","12:00"],st:kd?"Proses":"Selesai",1:c.j,2:O?cap(O):((c.ro||c.fb)&&raw?cap(raw):c.ob),3:n+" "+u,4:c.h(n,u,O,tp,raw),5:kd?c.k:"Tidak ada",6:kd?c.t:"-",7:c.b}}
+function paintTime(td,r){const i=td.querySelectorAll("input");i[0].value=tv(r.s);i[1].value=tv(r.e);td.querySelector(".po").textContent=fmtTime(r)}
 function paintSt(td,r){td.querySelector("select").value=r.st;td.querySelector(".po").textContent=r.st}
 function applyRow(r,tr){if(!r.f[0].trim())return;const o=suggest(r);
  const mark=k=>{if(!r.ex.includes(k))r.ex.push(k);const td=tr&&tr.querySelector(`[data-c="${k}"]`);if(td)td.classList.add("ex");return td};
@@ -194,7 +197,7 @@ function rowHTML(r,i){const x=k=>r.ex.includes(k)?" ex":"";const A0=rows(),nd=i=
  const T=(k,c)=>`<td class="${c||""}${x(String(k))}" data-c="${k}" contenteditable>${esc(r.f[k])}</td>`;
  return `<tr data-r="${i}"${nd?' class="nd"':""}><td class="c">${i+1}</td>
 <td class="c" data-c="d" contenteditable>${esc(fmtDate(r.d))}</td>
-<td class="c tm${x("j")}" data-c="j"><input type="time" value="${esc(r.s)}"> s/d <input type="time" value="${esc(r.e)}"><br><select class="pre"><option value="">Pilih cepat</option>${PRE.map(p=>`<option value="${p}">${p.replace(/:/g,".").replace("|"," - ")}</option>`).join("")}</select><span class="po">${esc(fmtTime(r))}</span></td>
+<td class="c tm${x("j")}" data-c="j"><input type="time" value="${esc(tv(r.s))}"> s/d <input type="time" value="${esc(tv(r.e))}"><br><select class="pre"><option value="">Pilih cepat</option>${PRE.map(p=>`<option value="${p}">${p.replace(/:/g,".").replace("|"," - ")}</option>`).join("")}</select><span class="po">${esc(fmtTime(r))}</span></td>
 ${T(0)}${T(1)}${T(2)}${T(3,"c")}${T(4)}${T(5)}${T(6)}<td class="${x("7")}" data-c="7"><div class="bt" contenteditable>${esc(r.f[7])}</div><div class="fl">${flHTML(r)}</div><button class="s attb noprint" data-att="1">+ Lampirkan (Google Drive)</button></td>
 <td class="c${x("st")}" data-c="st"><select>${["","Selesai","Proses"].map(s=>`<option value="${s}"${r.st==s?" selected":""}>${s}</option>`).join("")}</select><span class="po">${esc(r.st)}</span></td>
 <td class="c noprint act">${r.d?`<button class="s" data-a="add" title="Tambah kegiatan pada tanggal ini (maksimal 8 per hari)">+ Kegiatan ${dn}/${MAXD}</button>`:""}<button class="s" data-a="ex" title="Buat isian contoh dari uraian baris ini">Isi contoh</button><button class="s" data-a="clr" title="Kosongkan isi baris (tanggal tetap)">Kosongkan</button><button class="d" data-a="del" title="Hapus baris">Hapus</button></td></tr>`}
@@ -215,7 +218,7 @@ tb.addEventListener("focusout",e=>{const td=e.target.closest&&e.target.closest("
 });
 tb.addEventListener("change",e=>{const el=e.target,td=el.closest("td[data-c]");if(!td)return;const{r}=rowOf(td);if(!r)return;
  if(td.dataset.c=="j"){if(el.classList.contains("pre")){if(!el.value)return;[r.s,r.e]=el.value.split("|");el.value=""}
-  else{const i=[...td.querySelectorAll("input")].indexOf(el);if(i==0)r.s=el.value;else r.e=el.value}
+  else{const i=[...td.querySelectorAll("input")].indexOf(el);if(i==0)r.s=el.value;else r.e=el.value=="00:00"&&r.s&&r.s!="00:00"?"24:00":el.value}
   r.ex=r.ex.filter(x=>x!="j");td.classList.remove("ex");paintTime(td,r)}
  else if(td.dataset.c=="st"){r.st=el.value;r.ex=r.ex.filter(x=>x!="st");td.classList.remove("ex");td.querySelector(".po").textContent=r.st}
  save();stats()});
