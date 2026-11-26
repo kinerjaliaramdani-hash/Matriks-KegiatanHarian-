@@ -241,8 +241,14 @@ function gAuth(prompt){return new Promise((ok,no)=>{
   error_callback:()=>no(new Error("Jendela login Google ditutup atau diblokir. Coba klik lagi."))}).requestAccessToken(prompt?{prompt}:{});
  if(window.google&&google.accounts&&google.accounts.oauth2)return run();
  const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.onload=run;sc.onerror=()=>no(new Error("Gagal memuat Google. Periksa koneksi internet."));document.head.appendChild(sc)})}
+function gFriendly(m,st){const t=String(m||"");
+ if(/has not been used|is disabled|accessNotConfigured|SERVICE_DISABLED/i.test(t))return"Google Drive API belum aktif di proyek Google Cloud. Buka console.cloud.google.com/apis/library/drive.googleapis.com?project=matriks-kegiatan-de24b lalu klik Enable, tunggu 1-2 menit, kemudian coba lagi.";
+ if(st==401)return"Sesi Google habis. Klik Lampirkan lagi lalu masuk ulang.";
+ if(/insufficient|scope/i.test(t))return"Izin akses Drive belum diberikan. Masuk lagi dan setujui izin akses Drive.";
+ if(/rate|quota/i.test(t))return"Kuota Google sementara habis. Coba lagi beberapa menit lagi.";
+ return(t||"HTTP "+st)+(st?" (kode "+st+")":"")}
 async function gApi(url,opt){opt=opt||{};const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({Authorization:"Bearer "+gTok},opt.headers)}));
- if(!r.ok){let m="";try{m=(await r.json()).error.message}catch(x){}throw new Error(m||"HTTP "+r.status)}return r.json()}
+ if(!r.ok){let m="";try{m=(await r.json()).error.message}catch(x){}throw new Error(gFriendly(m,r.status))}return r.json()}
 const JH={"Content-Type":"application/json"};
 async function gFolder(name,parent){const key=(parent||"root")+"/"+name;if(gFold[key])return gFold[key];
  const q="name='"+name+"' and mimeType='application/vnd.google-apps.folder' and trashed=false"+(parent?" and '"+parent+"' in parents":"");
@@ -268,7 +274,7 @@ async function gUpload(i,fs){const r=R()[i];if(!r)return;let ok=0,w="";if($("gdl
    try{await gShare(d.id)}catch(x){w=" Link belum dibagikan: "+x.message+"."}
    (r.fl||(r.fl=[])).push({n:f.name,id:d.id,u:d.webViewLink});ok++;save()}
   render();toast(ok+" file diunggah ke Google Drive."+w)}
- catch(x){gFold={};render();toast("Gagal mengunggah: "+x.message)}}
+ catch(x){gFold={};render();toast("Gagal mengunggah: "+x.message);alert("Gagal mengunggah dokumen.\n\n"+x.message)}}
 async function gConnect(){GD.cid=$("gcid").value.trim();GD.acc=$("gacc").value;gsave();gTok=null;gFold={};if(!GD.cid)return toast("Isi Client ID dulu.");try{await gAuth("select_account");await gWho();toast("Terhubung sebagai "+GD.email+".")}catch(x){toast(x.message)}}
 async function gWho(){const a=await gApi("https://www.googleapis.com/drive/v3/about?fields=user(emailAddress,displayName)");
  if(GD.email&&GD.email!=a.user.emailAddress)gFold={};GD.email=a.user.emailAddress;GD.name=a.user.displayName||"";gsave();gStatus()}
