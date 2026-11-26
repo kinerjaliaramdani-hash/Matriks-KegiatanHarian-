@@ -20,8 +20,8 @@ h1{font-size:20px;margin:0 0 6px;text-align:center}
 button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}button.s{background:var(--card);color:var(--tx);border:1px solid var(--line)}
 button.d{background:none;color:#d33;border:1px solid #d33}
 .tip{font-size:12px;color:var(--mut);margin:0 0 8px}.tip span{background:var(--ex);padding:0 6px;border-radius:4px;color:var(--tx)}
-.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:1750px;font-size:12px;background:var(--card)}
-th,td{border:1px solid var(--line);padding:5px 7px;vertical-align:top}
+.tw{overflow-x:auto}table{border-collapse:collapse;table-layout:fixed;width:100%;min-width:1850px;font-size:12px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:5px 7px;vertical-align:top;overflow-wrap:anywhere}
 th{background:var(--hd);color:var(--hdt);text-align:center}td.c{text-align:center}td.ex{background:var(--ex)}
 td.emp{text-align:center;padding:26px;color:var(--mut)}
 select,input{font:inherit;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px}
@@ -75,7 +75,7 @@ tr.nd td{border-top:2px solid var(--ac)}@media print{tr.nd td{border-top:2px sol
 <input type="file" id="gf" multiple hidden accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar,.7z">
 <input type="file" id="rf" accept=".json,application/json" hidden></div>
 <p class="tip noprint"><b>Blok tabel:</b> seret mouse melintasi beberapa sel, atau klik nomor baris / judul kolom (tahan <b>Shift</b> untuk memperluas), lalu tekan <b>Delete</b> atau tombol <b>Hapus isi terpilih</b>. Tanggal tidak ikut terhapus; bisa diurungkan. Satu hari bisa berisi <b>sampai 8 kegiatan</b>, masing-masing punya jam sendiri: klik <b>+ Kegiatan</b> pada baris tanggal itu (jam otomatis lanjut dari kegiatan sebelumnya), atau pilih jumlah kegiatan per hari lalu klik <b>Buat baris semua hari kerja</b>. Kolom <b>Hari/Tanggal</b>: cukup ketik angka tanggalnya (mis. <b>2</b>), otomatis menjadi nama hari lengkap sesuai bulan yang dibuka. <b>Jam</b> dipilih dengan pemilih waktu atau menu pilihan cepat. Ketik <b>Uraian Kegiatan</b> lalu klik di luar kolom: kolom kosong terisi contoh (<span>warna kuning</span>). Gunakan <b>tombol panah</b> keyboard untuk berpindah antar sel (di kolom Jam dan Status, tahan <b>Ctrl</b> + panah). Tombol <b>Hapus</b> menghapus baris, <b>Kosongkan</b> menghapus isi baris saja; keduanya bisa diurungkan.</p>
-<div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
+<div class="tw"><table><colgroup><col style="width:40px"><col style="width:110px"><col style="width:120px"><col style="width:250px"><col style="width:130px"><col style="width:170px"><col style="width:90px"><col style="width:190px"><col style="width:160px"><col style="width:160px"><col style="width:190px"><col style="width:90px"><col style="width:150px" class=noprint></colgroup><thead id="th"></thead><tbody id="tb"></tbody></table></div>
 </div><dialog id="adlg" class="noprint" style="width:min(560px,94vw)"><div id="adb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('adlg').close()">Tutup</button></div></dialog><dialog id="gdlg" class="noprint"><div id="gdb"></div><div class="bar" style="margin:12px 0 0"><button class="s" onclick="$('gdlg').close()">Tutup</button></div></dialog><div id="toast"></div>
 <script>
 /* ISI setelah setup Firebase. Kosongkan apiKey = mode lokal tanpa login. */
